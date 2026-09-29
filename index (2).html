@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Любит или удобно? Чек-лист для женщин</title>
+<style>
+  :root{
+    --bg:#fdf6f8;
+    --card:#ffffff;
+    --accent:#c9718f;
+    --accent-dark:#a5486a;
+    --text:#3a2c33;
+    --muted:#8a7580;
+    --yes:#6fa88a;
+    --no:#d98a8a;
+    --warn:#f6e3b4;
+    --warn-border:#d9a441;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Georgia','Segoe UI',serif;
+    background:linear-gradient(180deg,#fdf6f8 0%, #f7ecf0 100%);
+    color:var(--text);
+    line-height:1.6;
+  }
+  header{
+    text-align:center;
+    padding:60px 20px 40px;
+    background:linear-gradient(135deg,#f3d9e2,#e9c6d6);
+  }
+  header h1{
+    font-size:2.4rem;
+    margin:0 0 10px;
+    color:var(--accent-dark);
+  }
+  header p.subtitle{
+    font-size:1.15rem;
+    color:var(--text);
+    max-width:600px;
+    margin:0 auto;
+  }
+  .intro{
+    max-width:700px;
+    margin:30px auto;
+    padding:0 20px;
+    text-align:center;
+    color:var(--muted);
+  }
+  .container{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 20px 60px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 6px 20px rgba(180,120,140,0.15);
+    padding:30px 30px;
+    margin-bottom:24px;
+  }
+  .how-to h2, .questions h2, .result-section h2, .step-section h2{
+    color:var(--accent-dark);
+    font-size:1.4rem;
+    margin-top:0;
+  }
+  .how-to ul{
+    padding-left:20px;
+    margin:0;
+  }
+  .how-to li{margin-bottom:8px;}
+
+  .question{
+    border-bottom:1px solid #f0e0e6;
+    padding:22px 0;
+  }
+  .question:last-child{border-bottom:none;}
+  .q-title{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    font-weight:bold;
+    font-size:1.1rem;
+    color:var(--accent-dark);
+  }
+  .q-number{
+    background:var(--accent);
+    color:white;
+    border-radius:50%;
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.95rem;
+    flex-shrink:0;
+  }
+  .q-text{
+    margin:8px 0 14px;
+    color:var(--text);
+  }
+  .options{
+    display:flex;
+    gap:14px;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+  }
+  .option-btn{
+    padding:8px 20px;
+    border-radius:30px;
+    border:2px solid #e5c9d3;
+    background:#fff;
+    cursor:pointer;
+    font-size:0.95rem;
+    transition:all 0.15s ease;
+    color:var(--text);
+  }
+  .option-btn.yes.selected{
+    background:var(--yes);
+    border-color:var(--yes);
+    color:white;
+  }
+  .option-btn.no.selected{
+    background:var(--no);
+    border-color:var(--no);
+    color:white;
+  }
+  .option-btn.blank.selected{
+    background:#cfc4d6;
+    border-color:#cfc4d6;
+    color:white;
+  }
+  input[type="text"].example{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid #e5c9d3;
+    font-family:inherit;
+    font-size:0.95rem;
+    background:#fffafb;
+  }
+  .example-label{
+    font-size:0.85rem;
+    color:var(--muted);
+    margin-bottom:4px;
+    display:block;
+  }
+
+  .calc-btn{
+    display:block;
+    margin:20px auto 0;
+    padding:14px 34px;
+    background:var(--accent-dark);
+    color:#fff;
+    border:none;
+    border-radius:30px;
+    font-size:1.1rem;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .calc-btn:hover{background:#8c3a58;}
+
+  .save-btn{
+    display:block;
+    margin:12px auto 0;
+    padding:11px 28px;
+    background:#fff;
+    color:var(--accent-dark);
+    border:2px solid #e5c9d3;
+    border-radius:30px;
+    font-size:1rem;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .save-btn:hover{background:#faf0f3;}
+
+  .result-section{
+    display:none;
+  }
+  .result-summary{
+    display:flex;
+    justify-content:space-around;
+    text-align:center;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .result-summary div{
+    flex:1;
+    min-width:100px;
+  }
+  .result-summary .num{
+    font-size:2rem;
+    font-weight:bold;
+    color:var(--accent-dark);
+  }
+  .result-summary .lbl{
+    color:var(--muted);
+    font-size:0.9rem;
+  }
+  .result-text{
+    background:#faf0f3;
+    border-left:4px solid var(--accent);
+    padding:18px 20px;
+    border-radius:10px;
+    margin-top:10px;
+  }
+  .ranges{
+    margin-top:20px;
+  }
+  .range-item{
+    padding:12px 14px;
+    border-radius:10px;
+    margin-bottom:8px;
+    background:#faf5f7;
+  }
+  .range-item strong{color:var(--accent-dark);}
+
+  .warning-box{
+    background:var(--warn);
+    border:2px solid var(--warn-border);
+    border-radius:14px;
+    padding:20px 24px;
+    margin:30px 0;
+  }
+  .warning-box h3{
+    margin-top:0;
+    color:#7a5a12;
+  }
+
+  .step-section textarea{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #e5c9d3;
+    font-family:inherit;
+    font-size:0.95rem;
+    resize:vertical;
+    min-height:60px;
+    background:#fffafb;
+  }
+  .step-section label{
+    display:block;
+    margin:14px 0 6px;
+    font-weight:bold;
+    color:var(--accent-dark);
+  }
+  .phrase-template{
+    background:#faf0f3;
+    padding:16px 20px;
+    border-radius:12px;
+    font-style:italic;
+    color:var(--text);
+    margin:16px 0;
+    border-left:4px solid var(--accent);
+  }
+
+  footer{
+    text-align:center;
+    padding:30px 20px 50px;
+    color:var(--muted);
+    font-size:0.95rem;
+  }
+  footer .cta{
+    display:inline-block;
+    margin-top:14px;
+    padding:12px 26px;
+    background:var(--accent-dark);
+    color:#fff;
+    border-radius:30px;
+    text-decoration:none;
+    font-size:1rem;
+  }
+  .note-italic{
+    text-align:center;
+    color:var(--muted);
+    font-style:italic;
+    margin:18px 0;
+  }
+  @media (max-width:600px){
+    header h1{font-size:1.8rem;}
+    .card{padding:22px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Любит или удобно?</h1>
+  <p class="subtitle">7 вопросов об уважении, близости и взаимности</p>
+</header>
+
+<div class="intro">
+  <p>Не всегда легко понять, что происходит между вами — особенно когда тёплые слова расходятся с поступками. Этот чек-лист поможет посмотреть на отношения внимательнее: без обвинений и поспешных решений.</p>
+</div>
+
+<div class="container">
+
+  <div class="card how-to">
+    <h2>Как пользоваться</h2>
+    <ul>
+      <li>Вспомните последние 1–2 месяца.</li>
+      <li>Отмечайте «да», если это происходит обычно, а не только после ссор.</li>
+      <li>Если пока не можете ответить — оставьте пункт пустым. Это повод понаблюдать, а не автоматически поставить «нет».</li>
+      <li>В строке рядом запишите короткий пример из жизни.</li>
+    </ul>
+  </div>
+
+  <div class="card questions" id="questions">
+    <h2>Семь вопросов</h2>
+
+    <div class="question" data-q="1">
+      <div class="q-title"><span class="q-number">1</span>Участие в повседневной жизни</div>
+      <div class="q-text">Он сам проявляет интерес к моей жизни и находит время для нас, а не обращается ко мне только тогда, когда ему что-то нужно.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <div class="question" data-q="2">
+      <div class="q-title"><span class="q-number">2</span>Понятные договорённости</div>
+      <div class="q-text">Мы можем обсуждать, чего каждый ждёт от отношений. Общие планы учитывают нас обоих, а договорённости подкрепляются действиями.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <div class="question" data-q="3">
+      <div class="q-title"><span class="q-number">3</span>Ответственность после ссор</div>
+      <div class="q-text">Он способен признать свою часть ответственности и старается менять поведение, которое причиняет мне боль.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <div class="question" data-q="4">
+      <div class="q-title"><span class="q-number">4</span>Уважение к моему «нет»</div>
+      <div class="q-text">Он уважает мой отказ, даже если расстроен: не давит, не угрожает и не пытается добиться согласия через чувство вины.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <div class="question" data-q="5">
+      <div class="q-title"><span class="q-number">5</span>Место для моей собственной жизни</div>
+      <div class="q-text">В отношениях есть место моим друзьям, интересам и успехам — без высмеивания, контроля и требований отказаться от важного для меня.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <div class="question" data-q="6">
+      <div class="q-title"><span class="q-number">6</span>Поддержка в трудные дни</div>
+      <div class="q-text">Когда мне трудно, я могу попросить о поддержке. Он откликается по мере возможностей, не обесценивая мои переживания.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <div class="question" data-q="7">
+      <div class="q-title"><span class="q-number">7</span>Возможность быть собой</div>
+      <div class="q-text">Рядом с ним я обычно могу говорить о своих чувствах и потребностях, не ожидая унижения, угроз или наказания за откровенность.</div>
+      <div class="options">
+        <button class="option-btn yes" data-val="yes">Да</button>
+        <button class="option-btn no" data-val="no">Нет</button>
+        <button class="option-btn blank" data-val="blank">Пока не знаю</button>
+      </div>
+      <label class="example-label">Пример из жизни:</label>
+      <input type="text" class="example" placeholder="Например: ...">
+    </div>
+
+    <p class="note-italic">Не угадывайте чувства — замечайте поступки.</p>
+    <button class="calc-btn" id="calcBtn">Посмотреть результат →</button>
+    <button class="save-btn" id="saveBtn" type="button">Сохранить</button>
+  </div>
+
+  <div class="card result-section" id="resultSection">
+    <h2>От наблюдений — к следующему шагу</h2>
+    <p>Этот чек-лист — не психологический тест и не способ измерить любовь. Количество «да» помогает упорядочить наблюдения, но важнее — какие именно пункты вызывают сомнения и как вы себя при этом чувствуете.</p>
+
+    <div class="result-summary">
+      <div><div class="num" id="numYes">0</div><div class="lbl">«Да»</div></div>
+      <div><div class="num" id="numNo">0</div><div class="lbl">«Нет»</div></div>
+      <div><div class="num" id="numBlank">0</div><div class="lbl">Без ответа</div></div>
+    </div>
+
+    <div class="result-text" id="resultText"></div>
+
+    <div class="ranges">
+      <div class="range-item"><strong>6–7 «да»:</strong> Вы отмечаете много признаков уважения и взаимности. Заметьте, что помогает вам сохранять близость, и обсудите оставшиеся трудности — их не нужно игнорировать.</div>
+      <div class="range-item"><strong>4–5 «да»:</strong> В отношениях есть опоры, но некоторые важные потребности могут оставаться без внимания. Выберите один пункт с «нет» и сформулируйте конкретную просьбу.</div>
+      <div class="range-item"><strong>2–3 «да»:</strong> По вашим ответам во многих областях не хватает поддержки или ясности. Подумайте, что для вас необходимо и есть ли готовность обоих что-то менять.</div>
+      <div class="range-item"><strong>0–1 «да»:</strong> Сейчас вы отмечаете мало перечисленных опор. Не нужно решать всё немедленно: обсудите происходящее с человеком, которому доверяете, или с психологом.</div>
+    </div>
+    <p class="note-italic">Если есть пропуски — пока сосредоточьтесь на отдельных пунктах, а не на сумме. Диапазоны условны, это не диагностические нормы.</p>
+  </div>
+
+  <div class="warning-box">
+    <h3>⚠ Безопасность важнее суммы ответов</h3>
+    <p>Угрозы, принуждение, насилие и страх перед реакцией партнёра не компенсируются другими «да». Если это есть в вашей жизни, не начинайте разговор наедине, когда это может быть опасно. Сначала обратитесь за поддержкой; при непосредственной опасности — в местную экстренную службу.</p>
+    <p><strong>Ваши чувства и потребности имеют значение.</strong></p>
+  </div>
+
+  <div class="card step-section">
+    <h2>Один шаг на сегодня</h2>
+    <p>Если обсуждать отношения безопасно, выберите один пункт, который вас задел, и вспомните конкретную ситуацию. Скажите:</p>
+    <div class="phrase-template">
+      «Когда происходит <input type="text" aria-label="Что происходит" style="width:140px; border:0; border-bottom:1px solid currentColor; outline:none; background:transparent; font:inherit; color:inherit; padding:0 2px;">, я чувствую <input type="text" aria-label="Что я чувствую" style="width:140px; border:0; border-bottom:1px solid currentColor; outline:none; background:transparent; font:inherit; color:inherit; padding:0 2px;">.<br>
+      Мне важно <input type="text" aria-label="Что для меня важно" style="width:180px; border:0; border-bottom:1px solid currentColor; outline:none; background:transparent; font:inherit; color:inherit; padding:0 2px;">.<br>
+      Можем ли мы договориться о <input type="text" aria-label="О чём договориться" style="width:180px; border:0; border-bottom:1px solid currentColor; outline:none; background:transparent; font:inherit; color:inherit; padding:0 2px;">?»
+    </div>
+    <p>Затем наблюдайте не только за ответом, но и за тем, выполняется ли договорённость.</p>
+
+    <label>О чём я хочу договориться:</label>
+    <textarea placeholder="Запишите здесь..."></textarea>
+
+    <label>Какое конкретное изменение я смогу заметить:</label>
+    <textarea placeholder="Запишите здесь..."></textarea>
+  </div>
+
+</div>
+
+<footer>
+  <p>Вам не нужно доказывать, что партнёр вас не любит, чтобы признать: вам больно, чего-то не хватает или так с вами нельзя.</p>
+  <p>Подпишитесь на канал «Здоровые отношения для женщин» в Дзен — разборы ситуаций и практики для отношений, в которых есть место вам.</p>
+  <p><strong>Ваши чувства и потребности имеют значение.</strong></p>
+</footer>
+
+<script>
+  document.querySelectorAll('.question').forEach(q => {
+    const buttons = q.querySelectorAll('.option-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  });
+
+  document.getElementById('calcBtn').addEventListener('click', () => {
+    let yes=0, no=0, blank=0;
+    document.querySelectorAll('.question').forEach(q => {
+      const sel = q.querySelector('.option-btn.selected');
+      if(!sel){ blank++; return; }
+      const val = sel.getAttribute('data-val');
+      if(val==='yes') yes++;
+      else if(val==='no') no++;
+      else blank++;
+    });
+
+    document.getElementById('numYes').textContent = yes;
+    document.getElementById('numNo').textContent = no;
+    document.getElementById('numBlank').textContent = blank;
+
+    let text = '';
+    if(yes>=6) text = 'Вы отмечаете много признаков уважения и взаимности. Заметьте, что помогает вам сохранять близость, и обсудите оставшиеся трудности — их не нужно игнорировать.';
+    else if(yes>=4) text = 'В отношениях есть опоры, но некоторые важные потребности могут оставаться без внимания. Выберите один пункт с «нет» и сформулируйте конкретную просьбу.';
+    else if(yes>=2) text = 'По вашим ответам во многих областях не хватает поддержки или ясности. Подумайте, что для вас необходимо и есть ли готовность обоих что-то менять.';
+    else text = 'Сейчас вы отмечаете мало перечисленных опор. Не нужно решать всё немедленно: обсудите происходящее с человеком, которому доверяете, или с психологом.';
+
+    if(blank>0){
+      text += ' Обратите внимание: у вас есть пункты без ответа — сосредоточьтесь на них, а не только на сумме.';
+    }
+
+    document.getElementById('resultText').textContent = text;
+    document.getElementById('resultSection').style.display = 'block';
+    document.getElementById('resultSection').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  // Сохранение заполненного чек-листа в браузере
+  const saveKey = 'love-checklist-data';
+
+  function saveData(){
+    const data = {
+      answers: Array.from(document.querySelectorAll('.question')).map(q => {
+        const selected = q.querySelector('.option-btn.selected');
+        return selected ? selected.getAttribute('data-val') : '';
+      }),
+      examples: Array.from(document.querySelectorAll('input.example')).map(i => i.value),
+      phraseInputs: Array.from(document.querySelectorAll('.phrase-template input')).map(i => i.value),
+      textareas: Array.from(document.querySelectorAll('.step-section textarea')).map(t => t.value)
+    };
+    localStorage.setItem(saveKey, JSON.stringify(data));
+    const btn = document.getElementById('saveBtn');
+    btn.textContent = 'Сохранено ✓';
+    setTimeout(() => btn.textContent = 'Сохранить', 1500);
+  }
+
+  function loadData(){
+    const saved = localStorage.getItem(saveKey);
+    if(!saved) return;
+    try{
+      const data = JSON.parse(saved);
+      document.querySelectorAll('.question').forEach((q, i) => {
+        const val = data.answers?.[i];
+        if(val){
+          const btn = q.querySelector(`.option-btn[data-val="${val}"]`);
+          if(btn) btn.classList.add('selected');
+        }
+      });
+      document.querySelectorAll('input.example').forEach((i, n) => i.value = data.examples?.[n] || '');
+      document.querySelectorAll('.phrase-template input').forEach((i, n) => i.value = data.phraseInputs?.[n] || '');
+      document.querySelectorAll('.step-section textarea').forEach((t, n) => t.value = data.textareas?.[n] || '');
+    }catch(e){}
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', saveData);
+  loadData();
+</script>
+
+</body>
+</html>
